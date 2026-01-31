@@ -15,6 +15,7 @@ namespace ONTI_2017
     public partial class Form1 : Form
     {
         private string constr = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=""|DataDirectory|\TurismDB.mdf"";Integrated Security=True;Connect Timeout=30";
+        int id;
         public Form1()
         {
             InitializeComponent();
@@ -27,15 +28,16 @@ namespace ONTI_2017
             using (SqlConnection con = new SqlConnection(constr))
             {
                 con.Open();
-                SqlCommand cmd = new SqlCommand("Select parola from Utilizatori where Email = @email", con);
+                SqlCommand cmd = new SqlCommand("Select IdUser, parola from Utilizatori where Email = @email", con);
                 cmd.Parameters.AddWithValue("@email", textBox1.Text);
                 SqlDataReader rdr = cmd.ExecuteReader();
                 if (rdr.Read())
                 {
-                    string pass = rdr[0].ToString();
+                    id = Int32.Parse(rdr[0].ToString());
+                    string pass = rdr[1].ToString();
                     if(textBox2.Text == pass) 
                     {
-                        FrmVacanta vacanta = new FrmVacanta(textBox1.Text);
+                        FrmVacanta vacanta = new FrmVacanta(textBox1.Text, id);
                         vacanta.Show();
                         this.Hide();
                     }
@@ -88,6 +90,7 @@ namespace ONTI_2017
                     cmd.Parameters.AddWithValue("@Pret", Int32.Parse(c[2].ToString()));
                     cmd.Parameters.AddWithValue("@NrLocuri", Int32.Parse(c[3].ToString()));
                     cmd.ExecuteNonQuery();
+                    
                 }
             }
         }
